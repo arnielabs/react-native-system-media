@@ -20,3 +20,16 @@ const SystemMedia = NativeModules.SystemMedia
 export function multiply(a: number, b: number): Promise<number> {
   return SystemMedia.multiply(a, b);
 }
+
+export function isPermissionGranted(): Promise<boolean> {
+  return SystemMedia.isPermissionGranted();
+}
+
+export function requestPermissionAccess(): Promise<boolean> {
+  return SystemMedia.requestPermissionAccess();
+}
+
+export function getActiveMediaSessions(): Promise<any> {
+  return SystemMedia.getActiveMediaSessions();
+}
+getActiveMediaSessions;

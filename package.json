@@ -51,14 +51,14 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/r-arvind/react-native-system-media.git"
+    "url": "git+https://github.com/arnielabs/react-native-system-media.git"
   },
   "author": "r-arvind <rarvind1999@gmail.com> (https://github.com/r-arvind)",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/r-arvind/react-native-system-media/issues"
+    "url": "https://github.com/arnielabs/react-native-system-media/issues"
   },
-  "homepage": "https://github.com/r-arvind/react-native-system-media#readme",
+  "homepage": "https://github.com/arnielabs/react-native-system-media#readme",
   "publishConfig": {
     "registry": "https://registry.npmjs.org/"
   },
