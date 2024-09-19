@@ -28,4 +28,3 @@ export function requestPermissionAccess(): Promise<boolean> {
 export function getActiveMediaSessions(): Promise<any> {
   return SystemMedia.getActiveMediaSessions();
 }
-getActiveMediaSessions;
