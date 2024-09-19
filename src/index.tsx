@@ -17,10 +17,6 @@ const SystemMedia = NativeModules.SystemMedia
       }
     );
 
-export function multiply(a: number, b: number): Promise<number> {
-  return SystemMedia.multiply(a, b);
-}
-
 export function isPermissionGranted(): Promise<boolean> {
   return SystemMedia.isPermissionGranted();
 }

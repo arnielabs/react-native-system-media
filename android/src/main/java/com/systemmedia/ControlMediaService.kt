@@ -13,21 +13,12 @@ import android.provider.Settings
 class ControlMediaService : NotificationListenerService() {
   private val TAG = "SystemMediaListener"
 
-  override fun onCreate() {
-      super.onCreate()
-      Log.d(TAG, "Notification Listener Service created")
-  }
-
     override fun onNotificationPosted(sbn: StatusBarNotification?) {
-      Log.d(TAG, "FromNotificationListener")
+      Log.d(TAG, "Notification Changed")
   }
 
     override fun onNotificationRemoved(sbn: StatusBarNotification?) {
       Log.d(TAG, "FromNotificationListener")
   }
-
-  override fun onListenerDisconnected() {
-    Log.d(TAG, "Notificatio Disconnected")
-}
 
 }

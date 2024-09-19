@@ -18,6 +18,7 @@ import com.facebook.react.bridge.Arguments
 import com.facebook.react.bridge.WritableMap
 import com.facebook.react.bridge.WritableArray
 import android.media.MediaMetadata
+import android.media.session.PlaybackState
 
 class SystemMediaModule(reactContext: ReactApplicationContext) :
   ReactContextBaseJavaModule(reactContext) {
@@ -28,13 +29,6 @@ class SystemMediaModule(reactContext: ReactApplicationContext) :
     // Method to access the application context
   private fun getContext(): Context {
       return reactApplicationContext // This is how you access the context
-  }
-
-  // Example method
-  // See https://reactnative.dev/docs/native-modules-android
-  @ReactMethod
-  fun multiply(a: Double, b: Double, promise: Promise) {
-    promise.resolve(a * b)
   }
 
   @ReactMethod
@@ -85,13 +79,14 @@ class SystemMediaModule(reactContext: ReactApplicationContext) :
         }
 
         for (controller in controllers){
-          val metadata: MediaMetadata? = controller.metadata
+          val metadata: MediaMetadata? = controller?.getMetadata()
+          val playbackState: PlaybackState? = controller?.getPlaybackState()
+
           val controllerInfo: WritableMap = Arguments.createMap()
-          metadata?.keySet()?.forEach{
-            controllerInfo.putString(it, metadata.getString(it) ?: "NOT_AVAILABLE") // Add identifier if needed
-
-          }
-
+          
+          getAllMetadata(metadata, controllerInfo)
+          getPlaybackState(playbackState, controllerInfo)
+          controllerInfo.putString("PACKAGE_NAME", controller?.getPackageName())
           resultArray.pushMap(controllerInfo)     
         }
         promise.resolve(resultArray)
@@ -104,6 +99,62 @@ class SystemMediaModule(reactContext: ReactApplicationContext) :
 
 
   }
+
+
+  private fun getAllMetadata(md: MediaMetadata?, md_map: WritableMap){
+
+    md_map.putString("METADATA_KEY_ALBUM", md?.getString(MediaMetadata.METADATA_KEY_ALBUM))
+    md_map.putString("METADATA_KEY_TITLE", md?.getString(MediaMetadata.METADATA_KEY_TITLE))
+    md_map.putString("METADATA_KEY_ARTIST", md?.getString(MediaMetadata.METADATA_KEY_ARTIST))
+    md_map.putString("METADATA_KEY_AUTHOR", md?.getString(MediaMetadata.METADATA_KEY_AUTHOR))
+    md_map.putString("METADATA_KEY_WRITER", md?.getString(MediaMetadata.METADATA_KEY_WRITER))
+    md_map.putString("METADATA_KEY_COMPOSER", md?.getString(MediaMetadata.METADATA_KEY_COMPOSER))
+    md_map.putString("METADATA_KEY_COMPILATION", md?.getString(MediaMetadata.METADATA_KEY_COMPILATION))
+    md_map.putString("METADATA_KEY_DATE", md?.getString(MediaMetadata.METADATA_KEY_DATE))
+    md_map.putString("METADATA_KEY_GENRE", md?.getString(MediaMetadata.METADATA_KEY_GENRE))
+    md_map.putString("METADATA_KEY_ALBUM_ARTIST", md?.getString(MediaMetadata.METADATA_KEY_ALBUM_ARTIST))
+    md_map.putString("METADATA_KEY_ART_URI", md?.getString(MediaMetadata.METADATA_KEY_ART_URI))
+    md_map.putString("METADATA_KEY_ALBUM_ART_URI", md?.getString(MediaMetadata.METADATA_KEY_ALBUM_ART_URI))
+    md_map.putString("METADATA_KEY_DISPLAY_TITLE", md?.getString(MediaMetadata.METADATA_KEY_DISPLAY_TITLE))
+    md_map.putString("METADATA_KEY_DISPLAY_TITLE", md?.getString(MediaMetadata.METADATA_KEY_DISPLAY_TITLE))
+    md_map.putString("METADATA_KEY_DISPLAY_SUBTITLE", md?.getString(MediaMetadata.METADATA_KEY_DISPLAY_SUBTITLE))
+    md_map.putString("METADATA_KEY_DISPLAY_DESCRIPTION", md?.getString(MediaMetadata.METADATA_KEY_DISPLAY_DESCRIPTION))
+    md_map.putString("METADATA_KEY_DISPLAY_ICON_URI", md?.getString(MediaMetadata.METADATA_KEY_DISPLAY_ICON_URI))
+    md_map.putString("METADATA_KEY_MEDIA_ID", md?.getString(MediaMetadata.METADATA_KEY_MEDIA_ID))
+    md_map.putString("METADATA_KEY_MEDIA_URI", md?.getString(MediaMetadata.METADATA_KEY_MEDIA_URI))
+
+  
+    md_map.putDouble("METADATA_KEY_DURATION", md?.getLong(MediaMetadata.METADATA_KEY_DURATION)?.toDouble()?: -1.0)
+    md_map.putDouble("METADATA_KEY_YEAR", md?.getLong(MediaMetadata.METADATA_KEY_YEAR)?.toDouble()?: -1.0)
+    md_map.putDouble("METADATA_KEY_TRACK_NUMBER", md?.getLong(MediaMetadata.METADATA_KEY_TRACK_NUMBER)?.toDouble()?: -1.0)
+    md_map.putDouble("METADATA_KEY_NUM_TRACKS", md?.getLong(MediaMetadata.METADATA_KEY_NUM_TRACKS)?.toDouble()?: -1.0)
+    md_map.putDouble("METADATA_KEY_DISC_NUMBER", md?.getLong(MediaMetadata.METADATA_KEY_DISC_NUMBER)?.toDouble()?: -1.0)
+    md_map.putDouble("METADATA_KEY_BT_FOLDER_TYPE", md?.getLong(MediaMetadata.METADATA_KEY_BT_FOLDER_TYPE)?.toDouble()?: -1.0)
+  
+  }
+
+  private fun getPlaybackState(playbackState: PlaybackState?, map: WritableMap){
+        val state = playbackState?.getState()
+        val position = playbackState?.getPosition()
+        val bufferedPosition = playbackState?.getBufferedPosition()
+        val playbackSpeed = playbackState?.getPlaybackSpeed()
+        val lastPositionUpdate = playbackState?.getLastPositionUpdateTime()
+        val actions = playbackState?.getActions()
+        val errorMessage = playbackState?.getErrorMessage()
+
+        // val isActive = playbackState?.isActive()   //only availbble on API>31
+
+
+        map.putInt("playbackState", state?:0)
+        map.putDouble("playbackPosition", position?.toDouble()?: 0.0)
+        map.putDouble("playbackBufferedPosition", bufferedPosition?.toDouble()?: 0.0)
+        map.putDouble("playbackSpeed", playbackSpeed?.toDouble()?: 1.0)
+        map.putDouble("playbackActions", actions?.toDouble()?: 0.0)
+        map.putDouble("playbackLastPositionUpdate", lastPositionUpdate?.toDouble()?: 0.0)
+        map.putString("playbackErrorMessage", errorMessage?.toString())
+        // map.putBoolean("isActive", isActive?:false)
+  }
+
 
   companion object {
     const val NAME = "SystemMedia"
