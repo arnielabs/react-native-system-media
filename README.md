@@ -62,16 +62,72 @@ buildscript {
 
 > This library cannot be used with "Expo Go" app as it uses custom native code. The library supports expo Continuous Native Generation and can be used with Prebuild. 
 
+1. Install the npm module in your project.
+```sh
+npm install react-native-system-media
+```
 
+2. After installing, add the npm package to the config plugin section of your `app.json` or `app.config.json`.
+
+```js
+{
+  "expo": {
+    ...
+
+    "plugins": ["react-native-system-media"]
+
+    ...
+  }
+}
+```
 
 ## Usage
 
 ```js
-import { multiply } from 'react-native-system-media';
+import {
+  isPermissionGranted,
+  requestPermissionAccess,
+  getActiveMediaSessions,
+} from 'react-native-system-media';
 
-// ...
 
-const result = await multiply(3, 7);
+export default function MusicPlayer() {
+  const [perm, setPerm] = useState<boolean>();
+
+  useEffect(() => {
+    isPermissionGranted().then(setPerm);
+  }, []);
+
+  return (
+    <View style={styles.container}>
+      <Text>
+        Result: {perm ? 'Permission Granted' : 'Permission Not Granted'}
+      </Text>
+      <Button
+        title="Request Permission"
+        onPress={() => requestPermissionAccess()}
+      ></Button>
+      <Button
+        title="Request Song Info"
+        onPress={() => getActiveMediaSessions().then((t) => console.log(t))}
+      ></Button>
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  box: {
+    width: 60,
+    height: 60,
+    marginVertical: 20,
+  },
+});
+
 ```
 
 
